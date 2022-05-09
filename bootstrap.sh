@@ -8,4 +8,3 @@ if [ "x${NO_FORMAT}" == x ]; then
 fi
 
 poetry run python tools/generate-from-pymavlink.py ${ARGS}
-

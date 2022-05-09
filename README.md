@@ -44,4 +44,3 @@ on top of it.
 
 Any additional code found in the package is licensed under the GNU General
 Public License, version 3 or later. See `LICENSE.txt` for more details.
-
