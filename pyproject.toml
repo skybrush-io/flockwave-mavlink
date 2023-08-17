@@ -12,7 +12,7 @@ include = ["src/flockwave/protocols/mavlink/dialects/**/*"]
 [tool.poetry.dependencies]
 python = "^3.7"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^7.1.1"
 coverage = {extras = ["toml"], version = "^6.0"}
 pytest-cov = "^3.0.0"
@@ -20,8 +20,13 @@ rich = "^12.2.0"
 black = "^22.3.0"
 
 [[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[[tool.poetry.source]]
 name = "fury"
 url = "https://pypi.fury.io/skybrush/"
+priority = "supplemental"
 
 [tool.poetry.scripts]
 
