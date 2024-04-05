@@ -4,9 +4,7 @@ version = "0.1.0"
 description = "MAVLink protocol support for Skybrush"
 authors = ["Tamas Nepusz <tamas@collmot.com>"]
 license = "GPL-3.0-or-later"
-packages = [
-    { include = "flockwave", from = "src" }
-]
+packages = [{ include = "flockwave", from = "src" }]
 include = ["src/flockwave/protocols/mavlink/dialects/**/*"]
 
 [tool.poetry.dependencies]
@@ -14,7 +12,7 @@ python = "^3.9"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"
-coverage = {extras = ["toml"], version = "^7.4"}
+coverage = { extras = ["toml"], version = "^7.4" }
 pytest-cov = "^5.0.0"
 rich = "^13.7.0"
 
@@ -28,6 +26,11 @@ url = "https://pypi.fury.io/skybrush/"
 priority = "supplemental"
 
 [tool.poetry.scripts]
+
+[tool.ruff]
+ignore = ["B905", "C901", "E402", "E501"]
+line-length = 80
+select = ["B", "C", "E", "F", "W"]
 
 [tool.coverage.paths]
 source = ["src"]

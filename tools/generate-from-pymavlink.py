@@ -142,7 +142,7 @@ def process_dialect_code(code: bytes, *, format: bool = False) -> bytes:
             stdout=PIPE,
             stderr=None,
         )
-        formatted_code = proc.communicate(code, timeout=30)[0]
+        formatted_code = proc.communicate(code, timeout=60)[0]
         if proc.returncode:
             raise RuntimeError(f"black exited with return code {proc.returncode}")
     else:
