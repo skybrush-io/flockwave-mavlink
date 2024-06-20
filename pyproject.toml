@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "flockwave-mavlink"
-version = "0.2.0"
+version = "0.3.0"
 description = "MAVLink protocol support for Skybrush"
 authors = ["Tamas Nepusz <tamas@collmot.com>"]
 license = "GPL-3.0-or-later"
