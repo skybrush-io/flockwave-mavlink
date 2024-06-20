@@ -31,7 +31,7 @@ def create_parser() -> ArgumentParser:
         "--format",
         default=False,
         action="store_true",
-        help="format the generated code with black",
+        help="format the generated code with ruff",
     )
     parser.add_argument(
         "-o",
@@ -132,9 +132,10 @@ def process_dialect_code(code: bytes, *, format: bool = False) -> bytes:
             [
                 sys.executable,
                 "-m",
-                "black.__main__",
+                "ruff",
+                "format",
                 "-q",
-                "-t",
+                "--target-version",
                 "py37",
                 "-",
             ],
@@ -144,7 +145,7 @@ def process_dialect_code(code: bytes, *, format: bool = False) -> bytes:
         )
         formatted_code = proc.communicate(code, timeout=60)[0]
         if proc.returncode:
-            raise RuntimeError(f"black exited with return code {proc.returncode}")
+            raise RuntimeError(f"ruff exited with return code {proc.returncode}")
     else:
         formatted_code = code
     return formatted_code
