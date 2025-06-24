@@ -52,7 +52,9 @@ def process_options(options: Namespace) -> int:
     print(f"Parsed {total_parsed} packets from {input_file} in {duration} seconds.")
     print(f"Packets per second: {total_parsed / duration:.2f} pps.")
 
-    for pkt_type, count in sorted(packets_by_types.items(), key=itemgetter(1), reverse=True):
+    for pkt_type, count in sorted(
+        packets_by_types.items(), key=itemgetter(1), reverse=True
+    ):
         print(pkt_type, count)
 
     return 0
