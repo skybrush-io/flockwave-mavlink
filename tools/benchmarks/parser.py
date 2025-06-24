@@ -1,0 +1,68 @@
+"""Benchmark for the MAVLink packet parser."""
+
+import sys
+
+from argparse import ArgumentParser, Namespace
+from collections import defaultdict
+from operator import itemgetter
+from pickle import load
+from time import monotonic_ns
+
+from flockwave.protocols.mavlink.dialects.v20.ardupilotmega import MAVLink
+
+
+def create_parser() -> ArgumentParser:
+    """Creates a command line argument parser for the entry point of the script."""
+    parser = ArgumentParser()
+    parser.add_argument(
+        "input_file",
+        help="path to the input file containing raw MAVLink messages to benchmark",
+    )
+    return parser
+
+
+def process_options(options: Namespace) -> int:
+    """Processes the command line options and runs the benchmark."""
+    from rich.progress import track  # type: ignore
+
+    input_file = options.input_file
+
+    with open(input_file, "rb") as f:
+        data = load(f)
+
+    # Okay, packets loaded, time to parse!
+    link = MAVLink(None, srcSystem=1, srcComponent=1)
+    link.robust_parsing = True
+
+    total_parsed = 0
+    start_time = monotonic_ns()
+    packets_by_types = defaultdict(int)
+    for chunk in track(data, description="Parsing packets..."):
+        packets = link.parse_buffer(chunk)
+        if packets is not None:
+            for packet in packets:
+                packets_by_types[type(packet)] += 1
+        total_parsed += len(packets or ())
+    end_time = monotonic_ns()
+
+    duration_nsec = end_time - start_time
+    duration = duration_nsec / 1_000_000_000  # Convert to seconds
+
+    print(f"Received {len(data)} UDP packets.")
+    print(f"Parsed {total_parsed} packets from {input_file} in {duration} seconds.")
+    print(f"Packets per second: {total_parsed / duration:.2f} pps.")
+
+    for pkt_type, count in sorted(packets_by_types.items(), key=itemgetter(1), reverse=True):
+        print(pkt_type, count)
+
+    return 0
+
+
+def main() -> int:
+    parser = create_parser()
+    options = parser.parse_args()
+    return process_options(options)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
