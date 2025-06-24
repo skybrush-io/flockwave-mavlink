@@ -1,7 +1,19 @@
 from __future__ import annotations
 
 from struct import Struct
-from typing import Any, Callable, Dict, List, Optional, Protocol, Sequence, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Protocol,
+    Sequence,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 
 class MAVLinkHeader(Protocol):
@@ -77,7 +89,10 @@ class MAVLinkMessage(Protocol):
     def __eq__(self, other: object) -> bool: ...
 
 
-class MAVLinkSigningInterface(Protocol):
+T = TypeVar("T")
+
+
+class MAVLinkSigningInterface(Generic[T], Protocol):
     """Interface specification for the `MAVLinkSigning` instances to be found
     on `MAVLink` instances in the `signing` attribute.
     """
@@ -86,13 +101,44 @@ class MAVLinkSigningInterface(Protocol):
     timestamp: int
     link_id: int
     sign_outgoing: bool
-    allow_unsigned_callback: Optional[Callable[[MAVLinkInterface, int], bool]]
+    allow_unsigned_callback: Optional[Callable[[T, int], bool]]
     stream_timestamps: Dict[Tuple[int, int, int], int]
     sig_count: int
     badsig_count: int
     goodsig_count: int
     unsigned_count: int
     reject_count: int
+
+
+class MinimalMAVLinkInterface(Protocol):
+    """Interface specification for the `MAVLink` classes that are to be found
+    in each of the dialect modules.
+
+    This interface lists only a restricted set of the the common and publicly
+    available members of the MAVLink classes. Dialect-specific functions and
+    functions that are not used from Skybrush Server are not included.
+
+    The primary purpose of this interface is to prepare for a future optimization
+    step where these objects will be implmeneted in a lower-level language with
+    an interface that is compatible with this protocol.
+    """
+
+    seq: int  # used by MAVLinkMessage.pack()
+    srcSystem: int  # used by MAVLinkMessage.pack()
+    srcComponent: int  # used by MAVLinkMessage.pack()
+    robust_parsing: bool  # used when we set up a new instance
+    total_packets_sent: int  # used by our _notify_mavlink_packet_sent() function
+    total_bytes_sent: int  # used by our _notify_mavlink_packet_sent() function
+    signing: MAVLinkSigningInterface["MinimalMAVLinkInterface"]
+
+    def __init__(
+        self,
+        _file: None,  # must be None as it is unused
+        srcSystem: int = 0,
+        srcComponent: int = 0,
+    ): ...
+
+    def parse_buffer(self, s: Sequence[int]) -> Optional[List[MAVLinkMessage]]: ...
 
 
 class MAVLinkInterface(Protocol):
@@ -115,7 +161,7 @@ class MAVLinkInterface(Protocol):
     total_bytes_received: int
     total_receive_errors: int
     startup_time: float
-    signing: MAVLinkSigningInterface
+    signing: MAVLinkSigningInterface["MAVLinkInterface"]
 
     def __init__(
         self,
@@ -148,3 +194,7 @@ class MAVLinkInterface(Protocol):
 
 MAVLinkFactory = Callable[[], MAVLinkInterface]
 """Type specification for factory objects that create MAVLinkInterface_ instances."""
+
+
+MinimalMAVLinkFactory = Callable[[], MinimalMAVLinkInterface]
+"""Type specification for factory objects that create MinimalMAVLinkInterface_ instances."""
