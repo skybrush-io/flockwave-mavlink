@@ -15,6 +15,7 @@ from textwrap import dedent
 from typing import DefaultDict, Dict, Iterator, List, Optional
 from venv import create as create_virtualenv
 
+import re
 import sys
 
 
@@ -116,39 +117,81 @@ def read_dialect(dialect: str, version: str, *, in_venv: Path) -> bytes:
 
 def _patch_dialect_code(code: bytes) -> bytes:
     result: List[bytes] = []
+
+    extra_imports_inserted = False
+    x25crc_fast_inserted = False
+
     for line in code.strip().split(b"\n"):
-        if line.startswith(b"native_supported ="):
-            line = b"native_supported = False"
-        elif line.startswith(b"from pymavlink.generator.mavcrc import x25crc"):
-            line = b"from flockwave.protocols.mavlink.utils import X25CRCCalculator as x25crc"
+        if not extra_imports_inserted and line.startswith(b"import "):
+            # first import line, this is where we insert the extra imports
+            result.extend(
+                [b"", b"from crcmod.predefined import mkPredefinedCrcFun", b""]
+            )
+            extra_imports_inserted = True
+
+        if x25crc_fast_inserted:
+            # From now on we replace all occurrences of x25crc with x25crc_fast
+            line = line.replace(b"x25crc", b"x25crc_fast")
+            if b"crc.accumulate" in line:
+                # Also replace crc.accumulate with x25crc_fast
+                line = re.sub(
+                    rb"crc.accumulate\((.*)\)", rb"crc = x25crc_fast(\1, crc)", line
+                )
+            line = line.replace(b"crc.crc", b"crc")
+            line = line.replace(b"crc2.crc", b"crc2")
+
+        if not x25crc_fast_inserted and line.startswith(b"class x25crc"):
+            # Insert x25crc_fast before the class definition of x25crrc, which
+            # is kept for backwards compatibility.
+            result.extend(
+                [
+                    b'x25crc_fast = mkPredefinedCrcFun("crc-16-mcrf4xx")',
+                    b"",
+                    b"",
+                ]
+            )
+            x25crc_fast_inserted = True
+
+        if b"= MAVLink_bad_data" in line:
+            # We do not need MAVLink_bad_data instances so just replace them
+            # with None
+            line = re.sub(rb"MAVLink_bad_data\(.*\)", b"None", line)
+
         result.append(line)
+
+    assert extra_imports_inserted
+    assert x25crc_fast_inserted
+
     return b"\n".join(result) + b"\n"
 
 
-def process_dialect_code(code: bytes, *, format: bool = False) -> bytes:
-    code = _patch_dialect_code(code)
-    if format:
-        proc = Popen(
-            [
-                sys.executable,
-                "-m",
-                "ruff",
-                "format",
-                "-q",
-                "--target-version",
-                "py37",
-                "-",
-            ],
-            stdin=PIPE,
-            stdout=PIPE,
-            stderr=None,
-        )
-        formatted_code = proc.communicate(code, timeout=60)[0]
-        if proc.returncode:
-            raise RuntimeError(f"ruff exited with return code {proc.returncode}")
-    else:
-        formatted_code = code
+def _format_code(code: bytes) -> bytes:
+    """Formats the given code using ruff."""
+    proc = Popen(
+        [
+            sys.executable,
+            "-m",
+            "ruff",
+            "format",
+            "-q",
+            "--target-version",
+            "py37",
+            "-",
+        ],
+        stdin=PIPE,
+        stdout=PIPE,
+        stderr=None,
+    )
+    formatted_code = proc.communicate(code, timeout=60)[0]
+    if proc.returncode:
+        raise RuntimeError(f"ruff exited with return code {proc.returncode}")
     return formatted_code
+
+
+def process_dialect_code(code: bytes, *, format: bool = False) -> bytes:
+    formatted_code = _format_code(code) if format else code
+    patched_code = _patch_dialect_code(formatted_code)
+    return _format_code(patched_code) if format else patched_code
 
 
 def process_options(options: Namespace) -> int:
