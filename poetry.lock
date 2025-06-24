@@ -97,6 +97,89 @@ tomli = {version = "*", optional = true, markers = "python_full_version <= \"3.1
 toml = ["tomli ; python_full_version <= \"3.11.0a6\""]
 
 [[package]]
+name = "crcmod-plus"
+version = "2.1.0"
+description = "CRC generator - modernized"
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "crcmod-plus-2.1.0.tar.gz", hash = "sha256:127b80e1fce7cc52ed6da5e4cb74e48cb29616ee90924f444c73d9480f356158"},
+    {file = "crcmod_plus-2.1.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:7c6981edcc4cd54e2420dcdd5f1e6e59338b602ad047810fd638746b98ad0e73"},
+    {file = "crcmod_plus-2.1.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:15ea77fa6597ff77cbbb7f8c591cc6dc5d23dc90f8756bbd399f6d85668e6144"},
+    {file = "crcmod_plus-2.1.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b9d44916c9ae7efa9e8d8a0d76474f48c157d42fe8e163f159ad28497560f43e"},
+    {file = "crcmod_plus-2.1.0-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:82d9570ea39d81d104de4162671bb854aa6176ddfe863827dee5e70715af4eeb"},
+    {file = "crcmod_plus-2.1.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:44bc44f65d5b4eb03d5b96a483902583fca7d182f352f4a63b3835e5bc50cb1b"},
+    {file = "crcmod_plus-2.1.0-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:b76e38265edcbd1ec9eaea4a8a097be091d55fe26c2006bc1e5f36f87655a8e6"},
+    {file = "crcmod_plus-2.1.0-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:a4767aa8a00ccfebc6513f7100d783f209ce7d8158dfaf200c9edad57f3ef544"},
+    {file = "crcmod_plus-2.1.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:1072ccd9d5a50074b4f3378c55d43ee0642f8ff0cc58812bbe16582709e85b98"},
+    {file = "crcmod_plus-2.1.0-cp310-cp310-win32.whl", hash = "sha256:e58435bab44fef64b8135e0dd1bf30e72eeaae97cf32903d9bc739f316b4d61b"},
+    {file = "crcmod_plus-2.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:25811c306c8107b43945283854d8343ba222afbe72c43c4489869d14168eb076"},
+    {file = "crcmod_plus-2.1.0-cp311-abi3-macosx_10_9_x86_64.whl", hash = "sha256:02599da985cf311aa1ab85628d2a75b7398140f04ab787d724c87ab324394f06"},
+    {file = "crcmod_plus-2.1.0-cp311-abi3-macosx_11_0_arm64.whl", hash = "sha256:214a23e97b2eb899e261c354420caaa278e57e5ca9a13d0f7c20259ca9504940"},
+    {file = "crcmod_plus-2.1.0-cp311-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:236688536040d4ba326381bd539c17af1067d2618decffd53dad1775abd55153"},
+    {file = "crcmod_plus-2.1.0-cp311-abi3-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:96301a0bd3f87c640f66fec3e8b0917552e0d7aca2bdab46bdd045aedd585277"},
+    {file = "crcmod_plus-2.1.0-cp311-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:495cd1d136e5baaa554c8198fe716b46accf5cb393f89bf63c53cb3677517f22"},
+    {file = "crcmod_plus-2.1.0-cp311-abi3-musllinux_1_1_aarch64.whl", hash = "sha256:3bd2eb8abc3028937f35d69147154dab48885801e54864419c0c48ccb9db428b"},
+    {file = "crcmod_plus-2.1.0-cp311-abi3-musllinux_1_1_i686.whl", hash = "sha256:8c1494721395ab044893fc383233d3c0f0312cc59345ae75c28a30cd6f24a43a"},
+    {file = "crcmod_plus-2.1.0-cp311-abi3-musllinux_1_1_x86_64.whl", hash = "sha256:0617966720a323ea920c00d0cbdbc5dcf67c33414ea0d0062d4bdf77ab593338"},
+    {file = "crcmod_plus-2.1.0-cp311-abi3-win32.whl", hash = "sha256:8ed10c5de2d804bac5366ace0c37a9c465c1409d6d93799e5f3deb1206940544"},
+    {file = "crcmod_plus-2.1.0-cp311-abi3-win_amd64.whl", hash = "sha256:8d2eb27d791dfd4bd35cccd2c2e963c73dc9bac29dba9f6a7376cf4f1033d0a2"},
+    {file = "crcmod_plus-2.1.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:280940894860a31195f6ce1c79113c36aa44400e374ffd35032c09531ad5e2a7"},
+    {file = "crcmod_plus-2.1.0-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6ca0ffa404d2ab38b1ed57f148c5c958e83aac0aad049ddce49d137c5f61b3fc"},
+    {file = "crcmod_plus-2.1.0-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:681010e5e62b59c323076b5bfff261905db06428ab1d268af5e17dd640a6015a"},
+    {file = "crcmod_plus-2.1.0-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2f130ef22cb3f2575865c2ad2b4fefe6ba9152e9426f7ad7c495d1cb74a362be"},
+    {file = "crcmod_plus-2.1.0-cp37-cp37m-musllinux_1_1_aarch64.whl", hash = "sha256:3f223acddf0e98930996a0086950b85644b25a1e857c5bdf6967a5767cb56011"},
+    {file = "crcmod_plus-2.1.0-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:c31e15e50882bf74e6719923a0871aaa6bd8e5a46182ec985c812452da608a5e"},
+    {file = "crcmod_plus-2.1.0-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:f2dc0f94529ffa0068c70201f40b84c530524098a4dd15a42727c22c83ac305c"},
+    {file = "crcmod_plus-2.1.0-cp37-cp37m-win32.whl", hash = "sha256:0c52cc36d0ed0ea300063ab5ac708cf65ddf42c3d9c784f51cf1896159ace90b"},
+    {file = "crcmod_plus-2.1.0-cp37-cp37m-win_amd64.whl", hash = "sha256:38e55183c04d480c82abae6bbbc1b0d848ce4e44a8747f4ec8772cf3a70d7f02"},
+    {file = "crcmod_plus-2.1.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:15a5aea2504df9375324d3964eede5d887f4a0a50ad065f47998d931d26f68f7"},
+    {file = "crcmod_plus-2.1.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:2e50016d869f8e2cbfd1cef4ff5c7ae65c8a2bfd642ba03d675dd6ce93b41781"},
+    {file = "crcmod_plus-2.1.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b942d55326715f928d2ad0f2c041c071ef40cc264f36f405513f6266cd97b568"},
+    {file = "crcmod_plus-2.1.0-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:6ea3304f804b49a119f555597527166a62b37baf4b7816b91066d729f52fc954"},
+    {file = "crcmod_plus-2.1.0-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:715176190e3498ed769e80d8884c8497cab4983eeecb640c0c6a8760c198ebfb"},
+    {file = "crcmod_plus-2.1.0-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:000dfa8d91863bd17ff2081fc39ca0eadc7c8f7abc727295e5d619fc4ad60d8a"},
+    {file = "crcmod_plus-2.1.0-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:87a98b7184c420de1b1429cf5aa994a158d08a7d4487f972166a881bba9f1db5"},
+    {file = "crcmod_plus-2.1.0-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:758f1d76ba672ca53b0403dadb7f928466845df4a540834b09fa391082ab086b"},
+    {file = "crcmod_plus-2.1.0-cp38-cp38-win32.whl", hash = "sha256:689a2e5965561eadea67c34d57a4841fd687bdf3187f4dd5f32bdb619e3302d3"},
+    {file = "crcmod_plus-2.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:a0fcba37d4bca17013b5376ad88266699258bc3ce65846ee02b5048de5433e3e"},
+    {file = "crcmod_plus-2.1.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:7e5785a57067fe0db0a0ee611709f7e93efee197cea5c3ba97a8793c4686483d"},
+    {file = "crcmod_plus-2.1.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:b9e7594ba329b439ca439bd9e8d535a1430c7d25cd462233a2c64e5dc9df9e58"},
+    {file = "crcmod_plus-2.1.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5c342cb3d13f988799bcfdee09c163c2336f417939c9be6049314d03cc2c5a99"},
+    {file = "crcmod_plus-2.1.0-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:1d79b6d872ad5a9e6de61d2d412c71206dd2790be9778119b58631c31334d86d"},
+    {file = "crcmod_plus-2.1.0-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:aea75cd1ed57372b49977fd390c7309a66d204449153c2bd1d45245192f1396f"},
+    {file = "crcmod_plus-2.1.0-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:c8e3b6051ca78386ed9f10944241da641df1f26b2cb9d882310a595fb01360db"},
+    {file = "crcmod_plus-2.1.0-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:844acd37b02a0c0d7dde09cf9c4f11c2ad26039c1580fc21e442ccbe220b6b5b"},
+    {file = "crcmod_plus-2.1.0-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:fc6a890013583ed64f913d023d3d577481078affebc1b8fd3982eb6a5a3575a0"},
+    {file = "crcmod_plus-2.1.0-cp39-cp39-win32.whl", hash = "sha256:1b7c1a5dd8c9845a9a91c131a7289e06f5b5f2022f756bdec4e805f42d52fd55"},
+    {file = "crcmod_plus-2.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:4ae82221d42de7c212ecf43cbe54baabb4f2b0de0e5ded6258b88ccdc7758b80"},
+    {file = "crcmod_plus-2.1.0-pp310-pypy310_pp73-macosx_10_9_x86_64.whl", hash = "sha256:5b9708e2f083c94f56954e8fde45954fdf954c4a9615122ecfa01b48840ebcd8"},
+    {file = "crcmod_plus-2.1.0-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5f10708d1f83c928075b8d5a91ce48e88c53e7109d07cafbf701407381b1c346"},
+    {file = "crcmod_plus-2.1.0-pp310-pypy310_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:14d1dcc48986103be7bfb3b1003d3ffa79013f9efe51eb4bfc1647c2d8d11e62"},
+    {file = "crcmod_plus-2.1.0-pp310-pypy310_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:93c8cec43a47b7000a6f46d0f3648934a269f8159b5a71520ec9e9e5dff3abd0"},
+    {file = "crcmod_plus-2.1.0-pp310-pypy310_pp73-win_amd64.whl", hash = "sha256:832f1038234a4e1163f06c2ccfc1b743352a57fcc92cc20bd0582b6cf762cdbf"},
+    {file = "crcmod_plus-2.1.0-pp37-pypy37_pp73-macosx_10_9_x86_64.whl", hash = "sha256:a65f6f3afd5c4060a97b10ba96790ead16eef50201b28c2747c439bc751a330b"},
+    {file = "crcmod_plus-2.1.0-pp37-pypy37_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:2f757253d0fe2f05c22f722540fdd2fcb6b94e81af534ffd5e05bb0cea983ecd"},
+    {file = "crcmod_plus-2.1.0-pp37-pypy37_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:45bac87b9855844777da1dc151b421f08991b7d0cefe20d8f96e91f6030a6337"},
+    {file = "crcmod_plus-2.1.0-pp37-pypy37_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fa2e5ec73e53cffacd87532702fbfe2ced68a8f5f8e4d2e25beda2ac19e3be6d"},
+    {file = "crcmod_plus-2.1.0-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:5bbdc64763464c2b34ce9d08fa2e8dc5b0252e3be7fa1fd7543e9a20ba0a3a8a"},
+    {file = "crcmod_plus-2.1.0-pp38-pypy38_pp73-macosx_10_9_x86_64.whl", hash = "sha256:0d6f630d80dfb3dbacd008277e99bf5e3322f52fba872136df27db5a5f586408"},
+    {file = "crcmod_plus-2.1.0-pp38-pypy38_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a809b043d6b62c36c9f90c3f163243c315072acd639982e59497f916145b247c"},
+    {file = "crcmod_plus-2.1.0-pp38-pypy38_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:5ee653f0c8bdf654039af9f3dc0f10aa174d93486b0bc3a972acacb3722afe75"},
+    {file = "crcmod_plus-2.1.0-pp38-pypy38_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:362800ae4449ad11bc4da0e0942b77a075ef3bba68d6e35b4f41eb916ea2c33e"},
+    {file = "crcmod_plus-2.1.0-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:5c7052a8e5a6e4835b00ef9eb9c9c2a51295e1ccd9a73d8b9d336ecc3ce8a942"},
+    {file = "crcmod_plus-2.1.0-pp39-pypy39_pp73-macosx_10_9_x86_64.whl", hash = "sha256:cb03203f40c686ca66059f50ad354817d193b078b59a13b856481aa617473663"},
+    {file = "crcmod_plus-2.1.0-pp39-pypy39_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:de6087f81680850ed19e26981f269c5779ea46bcd8bee97e7cb5c5a9f2474993"},
+    {file = "crcmod_plus-2.1.0-pp39-pypy39_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:dc2653ba001c82eae4ccdfa329eb001a9a819e3869b53f48260abc0db51f9040"},
+    {file = "crcmod_plus-2.1.0-pp39-pypy39_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:478e81c875318d950debde11da2514f583cdd3a6dac09ab70b22ff39d2c60b3e"},
+    {file = "crcmod_plus-2.1.0-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:58e0e5d1eab953ce8189466ca975dd1f6aa85b29236b8e44331a629ed0ce0e82"},
+]
+
+[package.extras]
+dev = ["pytest"]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.3.0"
 description = "Backport of PEP 654 (exception groups)"
@@ -358,4 +441,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9"
-content-hash = "1d276d95555600c7a8a7942056f2ff19c38bea4f708f73ddce97c92a202b9420"
+content-hash = "dbd7cdbfd0479fd45f3ca102c599f049eee211913a09ddc5a23b6ef0635b03a7"

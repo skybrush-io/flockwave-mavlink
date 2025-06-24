@@ -5,6 +5,7 @@ description = "MAVLink protocol support for Skybrush"
 authors = [{ name = "Tamas Nepusz", email = "tamas@collmot.com" }]
 license = "GPL-3.0-or-later"
 requires-python = ">=3.9"
+dependencies = ["crcmod-plus >= 2.1.0"]
 
 [tool.poetry]
 packages = [{ include = "flockwave", from = "src" }]
