@@ -9,7 +9,12 @@ dependencies = ["crcmod-plus >= 2.1.0"]
 
 [tool.poetry]
 packages = [{ include = "flockwave", from = "src" }]
-include = ["src/flockwave/protocols/mavlink/dialects/**/*"]
+include = [
+  { path = "src/flockwave/protocols/mavlink/dialects/**/*", format = [
+    "sdist",
+    "wheel",
+  ] },
+]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
