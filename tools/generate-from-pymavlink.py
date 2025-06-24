@@ -157,6 +157,10 @@ def _patch_dialect_code(code: bytes) -> bytes:
             # with None
             line = re.sub(rb"MAVLink_bad_data\(.*\)", b"None", line)
 
+        if b'logger.info("new stream"' in line:
+            # We are not interested in these log messages
+            continue
+
         result.append(line)
 
     assert extra_imports_inserted
