@@ -41,16 +41,21 @@ def process_options(options: Namespace) -> int:
         packets = link.parse_buffer(chunk)
         if packets is not None:
             for packet in packets:
-                packets_by_types[type(packet)] += 1
+                packet_type = packet.get_type()
+                if packet_type != "BAD_DATA" and not packet_type.startswith("UNKNOWN_"):
+                    packets_by_types[packet.get_type()] += 1
         total_parsed += len(packets or ())
     end_time = monotonic_ns()
 
     duration_nsec = end_time - start_time
     duration = duration_nsec / 1_000_000_000  # Convert to seconds
 
+    total_parsed_not_bad_data = sum(packets_by_types.values())
     print(f"Received {len(data)} UDP packets.")
-    print(f"Parsed {total_parsed} packets from {input_file} in {duration} seconds.")
-    print(f"Packets per second: {total_parsed / duration:.2f} pps.")
+    print(
+        f"Parsed {total_parsed_not_bad_data} packets from {input_file} in {duration} seconds."
+    )
+    print(f"Packets per second: {total_parsed_not_bad_data / duration:.2f} pps.")
 
     for pkt_type, count in sorted(
         packets_by_types.items(), key=itemgetter(1), reverse=True
