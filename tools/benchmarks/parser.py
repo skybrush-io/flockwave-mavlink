@@ -11,12 +11,26 @@ from time import monotonic_ns
 from flockwave.protocols.mavlink.dialects.v20.ardupilotmega import MAVLink
 
 
+def hex_to_bytes(input: str | None) -> bytes:
+    """Converts a hexadecimal string to bytes."""
+    if input is None:
+        return b""
+    else:
+        return bytes.fromhex(input)
+
+
 def create_parser() -> ArgumentParser:
     """Creates a command line argument parser for the entry point of the script."""
     parser = ArgumentParser()
     parser.add_argument(
         "input_file",
         help="path to the input file containing raw MAVLink messages to benchmark",
+    )
+    parser.add_argument(
+        "-S",
+        "--signing-key",
+        help="use the given hexadecimal signing key to verify the packets",
+        type=hex_to_bytes,
     )
     return parser
 
@@ -33,6 +47,11 @@ def process_options(options: Namespace) -> int:
     # Okay, packets loaded, time to parse!
     link = MAVLink(None, srcSystem=1, srcComponent=1)
     link.robust_parsing = True
+
+    # Configure signing key if provided
+    if options.signing_key:
+        link.signing.secret_key = options.signing_key
+        print(f"Using signing key: {options.signing_key.hex()}")
 
     total_parsed = 0
     start_time = monotonic_ns()
