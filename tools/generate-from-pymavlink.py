@@ -120,8 +120,14 @@ def _patch_dialect_code(code: bytes) -> bytes:
 
     extra_imports_inserted = False
     x25crc_fast_inserted = False
+    next_line_action: Optional[str] = None
 
     for line in code.strip().split(b"\n"):
+        if next_line_action == "replace_cast":
+            # Replace the first argument of the cast with Any
+            line = re.sub(rb"^(\s*).*$", rb"\1Any,", line)
+            next_line_action = None
+
         if not extra_imports_inserted and line.startswith(b"import "):
             # first import line, this is where we insert the extra imports
             result.extend(
@@ -160,6 +166,16 @@ def _patch_dialect_code(code: bytes) -> bytes:
         if b'logger.info("new stream"' in line:
             # We are not interested in these log messages
             continue
+
+        if line.endswith(b"cast("):
+            # Replace the first argument of the cast with Any to avoid
+            # expensive construction of type aliases
+            next_line_action = "replace_cast"
+        elif b"cast(Union[Sequence[int], Sequence[float]]," in line:
+            line = line.replace(
+                b"cast(Union[Sequence[int], Sequence[float]],",
+                b"cast(Any,",
+            )
 
         result.append(line)
 
