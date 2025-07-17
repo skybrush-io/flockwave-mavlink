@@ -115,6 +115,10 @@ def read_dialect(dialect: str, version: str, *, in_venv: Path) -> bytes:
     )
 
 
+def _keep_indent(tmpl: bytes, line: bytes) -> bytes:
+    return re.sub(rb"^(\s*).*$", rb"\1", tmpl) + line
+
+
 def _patch_dialect_code(code: bytes) -> bytes:
     result: List[bytes] = []
 
@@ -125,43 +129,8 @@ def _patch_dialect_code(code: bytes) -> bytes:
     for line in code.strip().split(b"\n"):
         if next_line_action == "replace_cast":
             # Replace the first argument of the cast with Any
-            line = re.sub(rb"^(\s*).*$", rb"\1Any,", line)
+            line = _keep_indent(line, b"Any,")
             next_line_action = None
-
-        if not extra_imports_inserted and line.startswith(b"import "):
-            # first import line, this is where we insert the extra imports
-            result.extend(
-                [b"", b"from crcmod.predefined import mkPredefinedCrcFun", b""]
-            )
-            extra_imports_inserted = True
-
-        if x25crc_fast_inserted:
-            # From now on we replace all occurrences of x25crc with x25crc_fast
-            line = line.replace(b"x25crc", b"x25crc_fast")
-            if b"crc.accumulate" in line:
-                # Also replace crc.accumulate with x25crc_fast
-                line = re.sub(
-                    rb"crc.accumulate\((.*)\)", rb"crc = x25crc_fast(\1, crc)", line
-                )
-            line = line.replace(b"crc.crc", b"crc")
-            line = line.replace(b"crc2.crc", b"crc2")
-
-        if not x25crc_fast_inserted and line.startswith(b"class x25crc"):
-            # Insert x25crc_fast before the class definition of x25crrc, which
-            # is kept for backwards compatibility.
-            result.extend(
-                [
-                    b'x25crc_fast = mkPredefinedCrcFun("crc-16-mcrf4xx")',
-                    b"",
-                    b"",
-                ]
-            )
-            x25crc_fast_inserted = True
-
-        if b"= MAVLink_bad_data" in line:
-            # We do not need MAVLink_bad_data instances so just replace them
-            # with None
-            line = re.sub(rb"MAVLink_bad_data\(.*\)", b"None", line)
 
         if b'logger.info("new stream"' in line:
             # We are not interested in these log messages
@@ -177,10 +146,34 @@ def _patch_dialect_code(code: bytes) -> bytes:
                 b"cast(Any,",
             )
 
+        if line.endswith(b"if sum(len_map) == len(len_map):"):
+            # Replace the line with a more efficient check
+            line = _keep_indent(line, b"if not has_array:")
+
+        if line.endswith(b"tip = sum(len_map[:order])"):
+            # Replace the line with a more efficient check
+            line = _keep_indent(line, b"tip = clen_map[order]")
+
         result.append(line)
 
-    assert extra_imports_inserted
-    assert x25crc_fast_inserted
+        if line.endswith(b"len_map = msgtype.lengths"):
+            result.append(_keep_indent(line, b"has_array = msgtype.has_array"))
+            result.append(_keep_indent(line, b"clen_map = msgtype.cumulative_lengths"))
+
+        if line.startswith(b"    lengths = ["):
+            locals = {}
+            exec(line.strip(), {}, locals)
+            lengths = locals["lengths"]
+            has_array = sum(lengths) != len(lengths)
+            cumulative_lengths = [sum(lengths[:i]) for i in range(len(lengths))]
+            result.append(
+                _keep_indent(line, f"has_array = {has_array!r}".encode("ascii"))
+            )
+            result.append(
+                _keep_indent(
+                    line, f"cumulative_lengths = {cumulative_lengths!r}".encode("ascii")
+                )
+            )
 
     return b"\n".join(result) + b"\n"
 
@@ -233,7 +226,7 @@ def process_options(options: Namespace) -> int:
             create_virtualenv(venv_dir, clear=True, symlinks=True, with_pip=True)
         console.log(f"Created virtualenv in [b]{venv_dir}[/b]")
 
-        packages = ["pip", "wheel", "pymavlink"]
+        packages = ["pip", "wheel", "pymavlink>=2.4.48"]
         for package in packages:
             with console.status(f"Installing {package}..."):
                 pip("install", "-q", "-U", package)
