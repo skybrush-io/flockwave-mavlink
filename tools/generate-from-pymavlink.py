@@ -79,8 +79,8 @@ def find_dialects_in_venv(venv: Path) -> Dict[str, List[str]]:
         pkg = f"pymavlink.dialects.{dialect_version}"
         lines = py(
             "-c",
-            "from importlib.resources import contents; "
-            + f"print('\\n'.join(contents('{pkg}')))",
+            "from importlib.resources import files; "
+            + f"print('\\n'.join(file.name for file in files('{pkg}').iterdir()))",
         )
         for line in lines.split(b"\n"):
             if (
@@ -110,8 +110,8 @@ def read_dialect(dialect: str, version: str, *, in_venv: Path) -> bytes:
     pkg = f"pymavlink.dialects.{version}"
     return py(
         "-c",
-        "from importlib.resources import read_binary; import sys; "
-        + f"sys.stdout.buffer.write(read_binary('{pkg}', '{dialect}.py'))",
+        "from importlib.resources import files; import sys; "
+        + f"sys.stdout.buffer.write((files('{pkg}') / '{dialect}.py').read_bytes())",
     )
 
 
