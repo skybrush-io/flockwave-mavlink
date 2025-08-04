@@ -38,6 +38,7 @@ namespace = true
 [[tool.uv.index]]
 name = "fury"
 url = "https://pypi.fury.io/skybrush/"
+publish-url = "https://pypi.fury.io/skybrush/"
 
 [tool.ruff]
 lint.ignore = ["B905", "C901", "E402", "E501"]
