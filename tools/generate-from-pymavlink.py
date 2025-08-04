@@ -122,29 +122,10 @@ def _keep_indent(tmpl: bytes, line: bytes) -> bytes:
 def _patch_dialect_code(code: bytes) -> bytes:
     result: List[bytes] = []
 
-    extra_imports_inserted = False
-    x25crc_fast_inserted = False
-    next_line_action: Optional[str] = None
-
     for line in code.strip().split(b"\n"):
-        if next_line_action == "replace_cast":
-            # Replace the first argument of the cast with Any
-            line = _keep_indent(line, b"Any,")
-            next_line_action = None
-
         if b'logger.info("new stream"' in line:
             # We are not interested in these log messages
             continue
-
-        if line.endswith(b"cast("):
-            # Replace the first argument of the cast with Any to avoid
-            # expensive construction of type aliases
-            next_line_action = "replace_cast"
-        elif b"cast(Union[Sequence[int], Sequence[float]]," in line:
-            line = line.replace(
-                b"cast(Union[Sequence[int], Sequence[float]],",
-                b"cast(Any,",
-            )
 
         if line.endswith(b"if sum(len_map) == len(len_map):"):
             # Replace the line with a more efficient check
@@ -178,13 +159,19 @@ def _patch_dialect_code(code: bytes) -> bytes:
     return b"\n".join(result) + b"\n"
 
 
-def _format_code(code: bytes) -> bytes:
+def _format_code(code: bytes, *, line_length: int | None = None) -> bytes:
     """Formats the given code using ruff."""
+    ruff_args: list[str] = []
+    if line_length is not None:
+        ruff_args.extend(["--config", f"line-length={line_length}"])
+
     proc = Popen(
         [
             sys.executable,
             "-m",
             "ruff",
+            "--isolated",
+            *ruff_args,
             "format",
             "-q",
             "--target-version",
@@ -195,6 +182,7 @@ def _format_code(code: bytes) -> bytes:
         stdout=PIPE,
         stderr=None,
     )
+
     formatted_code = proc.communicate(code, timeout=60)[0]
     if proc.returncode:
         raise RuntimeError(f"ruff exited with return code {proc.returncode}")
@@ -202,7 +190,9 @@ def _format_code(code: bytes) -> bytes:
 
 
 def process_dialect_code(code: bytes, *, format: bool = False) -> bytes:
-    formatted_code = _format_code(code) if format else code
+    # Use a long line length for the dialect code to avoid unnecessary line breaks
+    # that make our job harder later when trying to patch the code.
+    formatted_code = _format_code(code, line_length=300) if format else code
     patched_code = _patch_dialect_code(formatted_code)
     return _format_code(patched_code) if format else patched_code
 
@@ -226,7 +216,7 @@ def process_options(options: Namespace) -> int:
             create_virtualenv(venv_dir, clear=True, symlinks=True, with_pip=True)
         console.log(f"Created virtualenv in [b]{venv_dir}[/b]")
 
-        packages = ["pip", "wheel", "pymavlink>=2.4.48"]
+        packages = ["pip", "wheel", "pymavlink>=2.4.49"]
         for package in packages:
             with console.status(f"Installing {package}..."):
                 pip("install", "-q", "-U", package)
