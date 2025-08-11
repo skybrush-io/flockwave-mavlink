@@ -135,11 +135,27 @@ def _patch_dialect_code(code: bytes) -> bytes:
             # Replace the line with a more efficient check
             line = _keep_indent(line, b"tip = clen_map[order]")
 
+        if line.endswith(b"for i, elem in enumerate(tlist):"):
+            # Replace the line with a more efficient check
+            line = _keep_indent(
+                line, b"for i, elem in (enumerate(tlist) if has_bytes else ()):"
+            )
+
         result.append(line)
 
         if line.endswith(b"len_map = msgtype.lengths"):
             result.append(_keep_indent(line, b"has_array = msgtype.has_array"))
+            result.append(_keep_indent(line, b"has_bytes = msgtype.has_bytes"))
             result.append(_keep_indent(line, b"clen_map = msgtype.cumulative_lengths"))
+
+        if line.startswith(b"    fieldtypes = ["):
+            locals = {}
+            exec(line.strip(), {}, locals)
+            fieldtypes = locals["fieldtypes"]
+            has_bytes = "char" in fieldtypes
+            result.append(
+                _keep_indent(line, f"has_bytes = {has_bytes!r}".encode("ascii"))
+            )
 
         if line.startswith(b"    lengths = ["):
             locals = {}
