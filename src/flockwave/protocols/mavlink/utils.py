@@ -1,32 +1,35 @@
-"""MAVLink CRC-16/MCRF4XX code
+from typing import Optional, List, Tuple, Union
 
-Copyright Andrew Tridgell
-Released under GNU LGPL version 3 or later
+__all__ = ("x25crc", "X25CRCCalculator")
 
-Modernized for Python 3.x by Tamas Nepusz
-"""
+# CRC calculation using fastcrc, falling back to a pure Python implementation
+# if fastcrc is not available
+try:
+    import fastcrc
 
-from array import array
-from typing import Any, Iterable, Optional, Union
+    mcrf4xx = fastcrc.crc16.mcrf4xx
+except Exception:
+    mcrf4xx = None  # type: ignore
 
-__all__ = ("X25CRCCalculator",)
+
+BytesLike = Union[List[int], Tuple[int, ...], bytes, bytearray, str]
 
 
-class X25CRCCalculator:
+class _x25crc_slow(object):
     """CRC-16/MCRF4XX - based on checksum.h from mavlink library"""
 
     crc: int
 
-    def __init__(self, buf: Optional[Union[bytes, str]] = None):
+    def __init__(self, buf: Optional[BytesLike] = None):
         self.crc = 0xFFFF
         if buf is not None:
-            if isinstance(buf, str):
-                self.accumulate_str(buf)
-            else:
-                self.accumulate(buf)
+            self.accumulate(buf)
 
-    def accumulate(self, buf: Iterable[int]) -> None:
-        """add in some more bytes"""
+    def accumulate(self, buf: BytesLike) -> None:
+        """add in some more bytes (it also accepts strings)"""
+        if isinstance(buf, str):
+            buf = buf.encode()
+
         accum = self.crc
         for b in buf:
             tmp = b ^ (accum & 0xFF)
@@ -34,11 +37,25 @@ class X25CRCCalculator:
             accum = (accum >> 8) ^ (tmp << 8) ^ (tmp << 3) ^ (tmp >> 4)
         self.crc = accum
 
-    def accumulate_str(self, buf: Any) -> None:
-        """add in some more bytes"""
-        bytes_array = array("B")
-        try:  # if buf is bytes
-            bytes_array.frombytes(buf)
-        except TypeError:  # if buf is str
-            bytes_array.frombytes(buf.encode())
-        self.accumulate(bytes_array)
+
+class _x25crc_fast(object):
+    """CRC-16/MCRF4XX - based on checksum.h from mavlink library"""
+
+    def __init__(self, buf: Optional[BytesLike] = None):
+        self.crc = 0xFFFF
+        if buf is not None:
+            self.accumulate(buf)
+
+    def accumulate(self, buf: BytesLike) -> None:
+        """add in some more bytes (it also accepts strings)"""
+        if isinstance(buf, str):
+            buf_as_bytes = bytes(buf.encode())
+        elif isinstance(buf, (list, tuple, bytearray)):
+            buf_as_bytes = bytes(buf)
+        else:
+            buf_as_bytes = buf
+        self.crc = mcrf4xx(buf_as_bytes, self.crc)
+
+
+x25crc = _x25crc_fast if mcrf4xx is not None else _x25crc_slow
+X25CRCCalculator = x25crc  # deprecated alias
