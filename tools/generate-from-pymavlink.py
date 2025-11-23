@@ -208,7 +208,7 @@ def _format_code(code: bytes, *, line_length: int | None = None) -> bytes:
 def process_dialect_code(code: bytes, *, format: bool = False) -> bytes:
     # Use a long line length for the dialect code to avoid unnecessary line breaks
     # that make our job harder later when trying to patch the code.
-    formatted_code = _format_code(code, line_length=300) if format else code
+    formatted_code = _format_code(code, line_length=3000) if format else code
     patched_code = _patch_dialect_code(formatted_code)
     return _format_code(patched_code) if format else patched_code
 
