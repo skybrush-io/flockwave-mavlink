@@ -3,20 +3,19 @@
 version of ``pymavlink``.
 """
 
+import re
+import sys
 from argparse import ArgumentParser, Namespace
 from collections import defaultdict
-from contextlib import contextmanager, ExitStack
+from contextlib import ExitStack, contextmanager
 from functools import partial
 from pathlib import Path
-from subprocess import PIPE, Popen, run
 from shutil import move, rmtree
+from subprocess import PIPE, Popen, run
 from tempfile import TemporaryDirectory
 from textwrap import dedent
 from typing import DefaultDict, Dict, Iterator, List, Optional
 from venv import create as create_virtualenv
-
-import re
-import sys
 
 
 def create_parser() -> ArgumentParser:
@@ -217,8 +216,8 @@ def process_options(options: Namespace) -> int:
     """Processes the command line options and executes the main functionality
     of the script.
     """
-    from rich.console import Console  # type: ignore
-    from rich.progress import track  # type: ignore
+    from rich.console import Console
+    from rich.progress import track
 
     console = Console()
     with ExitStack() as stack:

@@ -1,7 +1,6 @@
 """Benchmark for the MAVLink packet parser."""
 
 import sys
-
 from argparse import ArgumentParser, Namespace
 from collections import defaultdict
 from operator import itemgetter
@@ -37,7 +36,7 @@ def create_parser() -> ArgumentParser:
 
 def process_options(options: Namespace) -> int:
     """Processes the command line options and runs the benchmark."""
-    from rich.progress import track  # type: ignore
+    from rich.progress import track
 
     input_file = options.input_file
 

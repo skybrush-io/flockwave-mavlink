@@ -1,4 +1,4 @@
-from typing import Optional, List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 __all__ = ("x25crc", "X25CRCCalculator")
 
@@ -9,7 +9,7 @@ try:
 
     mcrf4xx = fastcrc.crc16.mcrf4xx
 except Exception:
-    mcrf4xx = None  # type: ignore
+    mcrf4xx = None
 
 
 BytesLike = Union[List[int], Tuple[int, ...], bytes, bytearray, str]
@@ -54,7 +54,7 @@ class _x25crc_fast(object):
             buf_as_bytes = bytes(buf)
         else:
             buf_as_bytes = buf
-        self.crc = mcrf4xx(buf_as_bytes, self.crc)
+        self.crc = mcrf4xx(buf_as_bytes, self.crc)  # ty:ignore[call-non-callable]
 
 
 x25crc = _x25crc_fast if mcrf4xx is not None else _x25crc_slow
