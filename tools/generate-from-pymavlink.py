@@ -231,7 +231,7 @@ def process_options(options: Namespace) -> int:
             create_virtualenv(venv_dir, clear=True, symlinks=True, with_pip=True)
         console.log(f"Created virtualenv in [b]{venv_dir}[/b]")
 
-        packages = ["pip", "wheel", "pymavlink>=2.4.49"]
+        packages = ["pip", "wheel", "pymavlink>=2.4.50"]
         for package in packages:
             with console.status(f"Installing {package}..."):
                 pip("install", "-q", "-U", package)
